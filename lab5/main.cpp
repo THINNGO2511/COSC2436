@@ -51,12 +51,12 @@ void printRepeatedKey(vector<string> vect, ofstream& out){
 
 int main(int argc, char* argv[]){
     //there could be empty files, need an if statement for that
-    ifstream input("input4.txt");
-    ofstream output("output1.txt");
+    // ifstream input("input1.txt");
+    // ofstream output("output1.txt");
 
-    // ArgumentManager am(argc, argv);
-    // ifstream input(am.get("input"));
-    // ofstream output(am.get("output"));
+    ArgumentManager am(argc, argv);
+    ifstream input(am.get("input"));
+    ofstream output(am.get("output"));
 
     string str;
     vector<string> vect;
