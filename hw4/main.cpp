@@ -36,25 +36,25 @@ Node *insert(struct Node *node, string key) {
 }
 
 //Inorder printing
-void printInorder(struct Node* node){
+void printInorder(struct Node* node, ofstream &out){
     if (node == NULL) return;
-    printInorder(node->left);
-    cout << node->key << endl;
-    printInorder(node->right);
+    printInorder(node->left, out);
+    out << node->key << endl;
+    printInorder(node->right, out);
 }
 //Preorder printing
-void printPreorder(struct Node* node){
+void printPreorder(struct Node* node, ofstream &out){
     if (node == NULL) return;
-    cout << node->key << endl;
-    printPreorder(node->left);
-    printPreorder(node->right);
+    out << node->key << endl;
+    printPreorder(node->left, out);
+    printPreorder(node->right, out);
 }
 //Postorder printing
-void printPostorder(struct Node* node){
+void printPostorder(struct Node* node, ofstream &out){
     if (node == NULL) return;
-    printPostorder(node->left);
-    printPostorder(node->right);
-    cout << node->key << endl;
+    printPostorder(node->left, out);
+    printPostorder(node->right, out);
+    out << node->key << endl;
 }
 
 void loadCommand(prio_queue<string> &pQueue ,string &curr, string &printingOrder){// the strings must be inputted by address (&) to save the info
@@ -99,7 +99,7 @@ void loadCommand(prio_queue<string> &pQueue ,string &curr, string &printingOrder
     
 }
 
-void runCommand(prio_queue<string> &pQueue, queue<string> queue, Node *root, string &printingOrder, ofstream &output){
+void runCommand(prio_queue<string> &pQueue, queue<string> queue, Node *root, string &printingOrder, ofstream &out){
     while(!pQueue.isEmpty()){
 
         if(pQueue.getFront()->data == "DECODE"){
@@ -107,92 +107,105 @@ void runCommand(prio_queue<string> &pQueue, queue<string> queue, Node *root, str
         }
 
         else if(pQueue.getFront()->data == "REPLACE"){
-            string str = queue.getFront()->data;
-            char OG = pQueue.getFront()->toChange[0];
-            char newChar = pQueue.getFront()->toChange[2];
+            if(!queue.isEmpty()){
+                string str = queue.getFront()->data;
+                char OG = pQueue.getFront()->toChange[0];
+                char newChar = pQueue.getFront()->toChange[2];
 
-            for(int i = 0; i < str.length(); i++){
-                if(str[i] == OG){
-                    str[i] = newChar;
+                for(int i = 0; i < str.length(); i++){
+                    if(str[i] == OG){
+                        str[i] = newChar;
+                    }
                 }
+                queue.dequeue();
+                queue.enqueue(str);
             }
-            queue.dequeue();
-            queue.enqueue(str);
         }
 
         else if(pQueue.getFront()->data == "ADD"){
-            string str = queue.getFront()->data;
-            char to = pQueue.getFront()->toChange[0];
-            char newChar = pQueue.getFront()->toChange[2];
+            if(!queue.isEmpty()){
+                string str = queue.getFront()->data;
+                char to = pQueue.getFront()->toChange[0];
+                char newChar = pQueue.getFront()->toChange[2];
 
-            string finalString = "";
+                string finalString = "";
 
-            for(int i = 0; i < str.length(); i++) {
-                if(str[i] != to){
-                    finalString += str[i];
-                }else if(str[i] == to){
-                    finalString += str[i];
-                    finalString += newChar;
+                for(int i = 0; i < str.length(); i++) {
+                    if(str[i] != to){
+                        finalString += str[i];
+                    }else if(str[i] == to){
+                        finalString += str[i];
+                        finalString += newChar;
+                    }
                 }
+                queue.dequeue();
+                queue.enqueue(finalString);
             }
-            queue.dequeue();
-            queue.enqueue(finalString);
         }
 
         else if(pQueue.getFront()->data == "REMOVE"){
-            string str = queue.getFront()->data;
-
-            char remove = pQueue.getFront()->toChange[0];
-            string finalString = "";
-            for(int i = 0; i < str.length(); i ++){
-                if(str[i] != remove){
-                    finalString += str[i];
-                }else{
-                    continue;
+            if(!queue.isEmpty()){
+                string str = queue.getFront()->data;
+                char remove = pQueue.getFront()->toChange[0];
+                string finalString = "";
+                for(int i = 0; i < str.length(); i ++){
+                    if(str[i] != remove){
+                        finalString += str[i];
+                    }else{
+                        continue;
+                    }
                 }
+                queue.dequeue();
+                queue.enqueue(finalString);
             }
-            queue.dequeue();
-            queue.enqueue(finalString);
         }
 
         else if(pQueue.getFront()->data == "SWAP"){
-            string str = queue.getFront()->data;
+            if(!queue.isEmpty()){
+                string str = queue.getFront()->data;
 
-            char before = pQueue.getFront()->toChange[0];
-            char after = pQueue.getFront()->toChange[2];
+                char before = pQueue.getFront()->toChange[0];
+                char after = pQueue.getFront()->toChange[2];
 
-            for(int i = 0; i < str.length(); i++){
-                if(str[i] == before){
-                    str[i] = after;
-                }else if(str[i] == after){
-                    str[i] = before;
+                for(int i = 0; i < str.length(); i++){
+                    if(str[i] == before){
+                        str[i] = after;
+                    }else if(str[i] == after){
+                        str[i] = before;
+                    }
                 }
+                queue.dequeue();
+                queue.enqueue(str);
             }
-            queue.dequeue();
-            queue.enqueue(str);
         }
 
         else if(pQueue.getFront()->data == "BST"){
-            string str = queue.getFront()->data;
-            root = insert(root, str);
-            queue.dequeue();
+            if(!queue.isEmpty()){
+                string str = queue.getFront()->data;
+                root = insert(root, str);
+                queue.dequeue();
+            }
         }
 
         pQueue.dequeue();
     }
 
     if(printingOrder == "Inorder"){
-        printInorder(root);
+        printInorder(root, out);
     }else if(printingOrder == "Postorder"){
-        printPostorder(root);
+        printPostorder(root, out);
     }else if(printingOrder == "Preorder"){
-        printPreorder(root);
+        printPreorder(root, out);
     }
 }
 
 int main(int argc, char **argv){
-    ifstream input("input5.txt");
-    ofstream output("output1.txt");
+    // ifstream input("input3.txt");
+    // ofstream output("output1.txt");
+
+    ArgumentManager am(argc, argv);
+    ifstream input(am.get("input"));
+    ofstream output(am.get("output"));
 
     string strCommand, strData, str, printingOrder;
     prio_queue<string> pQueue;
