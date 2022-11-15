@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 using namespace std;
 
 int main(int argc, char** argv){
@@ -16,6 +17,10 @@ int main(int argc, char** argv){
     //getting input
     while(input>>n){
         numVect.push_back(n);
+    }
+
+    for(int i = 0; i < numVect.size(); i++){
+        cout<<numVect[i]<<endl;
     }
 
     //getting command
