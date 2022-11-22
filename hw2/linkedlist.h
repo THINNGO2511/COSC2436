@@ -115,6 +115,9 @@ void linkedList<Type>::sortLoad(){
    nodeType<Type> *temp3 = new nodeType<Type>();
 
    temp3=head;
+   if(head == NULL){
+      return;
+   }
    while(temp3->link != NULL){
       nodeType<Type> *temp2 = new nodeType<Type>();
       temp2=temp3;
@@ -240,58 +243,45 @@ void linkedList<Type>::addAtLocation(string index, string credential)
    newNode->link=NULL;
 
    //to detect same id but different user or same id to update the rest
-   bool found = false;
+   int found = 0;
 
    if(head!=NULL){
       nodeType<Type> *detect;
       detect = head;
-      while(detect->link!=NULL){
-         if(detect->id!=newNode->id && detect->user==newNode->user){
-            return;
-         }else if(detect->id==newNode->id){
-            detect->user=newNode->user;
+      while(detect!=NULL){
+         if(detect->id == newNode->id){
             detect->score=newNode->score;
             detect->grade=newNode->grade;
-            found = true;
+            found = 1;
+            return;
+         }
+         if(detect->id!=newNode->id && detect->user==newNode->user){
+            return;
          }
          detect = detect->link;
       }
+
    }
 
-   if (found==false){
+   if (found==0){
 
-      nodeType<Type> *temp;
-      temp=head;
+      nodeType<Type> *temp= head;
+      nodeType<Type> *prev= NULL;
 
-      if(head==NULL){
-         head=tail=newNode;
-         pos=0;
+      if(ind > count){
+         return;
       }
-      else if(ind==0){
-         newNode->link=head;
+      else if( ind==0){
          head=newNode;
-         pos++;
-      }
-      else if(temp->link==NULL && ind>pos){
-         tail->link = newNode;
-	      tail = newNode;
-         pos++;
-      }
-      //tail->link==NULL
-      else if( ind>=count && ind>=(pos+1)){
-         tail->link = newNode;
-	      tail = newNode;
-         pos++;
+         newNode->link=temp;
       }
       else{
-         while(temp->link!=NULL){
-            if(ind==(pos+1)){
-               newNode->link=temp->link;
-               temp->link=newNode;
-            }
+         for(int i=0;i<ind;i++){
+            prev = temp;
             temp=temp->link;
-            pos++;
          }
+         prev->link=newNode;
+         newNode->link=temp;
       }
       count++;
    }
@@ -543,10 +533,15 @@ void linkedList<Type>::print(ofstream &out) const
 {
    nodeType<Type> *current; //pointer to traverse the list
    current = head; //set current point to the head node
-   while (current != NULL) //while more data to print
+   while (current != NULL ) //while more data to print
    {
-      out <<"["<< current->id << ";" <<current->user << ";" << current->score << ";" << current->grade <<"]"<< endl;
-      current = current->link;
+      if(current->id!=""){
+         out <<"["<< current->id << ";" <<current->user << ";" << current->score << ";" << current->grade <<"]"<< endl;
+         current = current->link;
+      }
+      else{
+         current = current->link;
+      }
    }
 }
 
