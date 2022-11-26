@@ -50,41 +50,40 @@ class bTree{
         }
 
         void addAtLeaf(node *parent, node *n, int data){
-        if(n -> leaf){
-            int i = n -> size;
-            while(i != 0 && n -> keys[i - 1] > data){
-                n -> keys[i] = n -> keys[i - 1];
-                i--;
+            if(n -> leaf){
+                int i = n -> size;
+                while(i != 0 && n -> keys[i - 1] > data){
+                    n -> keys[i] = n -> keys[i - 1];
+                    i--;
+                }
+
+                n -> keys[i] = data;
+                n -> size += 1;
             }
 
-            n -> keys[i] = data;
-            n -> size += 1;
-        }
+            else{
+                int i = 0;
+                while(i < n -> size && data > n -> keys[i]){
+                    i++;
+                }
 
-        else{
-            int i = 0;
-            while(i < n -> size && data > n -> keys[i]){
-                i++;
+                addAtLeaf(n, n -> childptr[i], data);
             }
 
-            addAtLeaf(n, n -> childptr[i], data);
-        }
+            if(n -> size == degree){
+                if(n == root){
+                    node* temp = new node(degree);
+                    temp -> leaf = false;
+                    temp -> childptr[0] = n;
+                    splitChild(temp, n);
+                    root = temp;
+                }
 
-        if(n -> size == degree){
-            if(n == root){
-                node* temp = new node(degree);
-                temp -> leaf = false;
-                temp -> childptr[0] = n;
-                splitChild(temp, n);
-                root = temp;
+                else{
+                    splitChild(parent, n);
+                }
             }
-
-        else{
-            splitChild(parent, n);
         }
-        
-      }
-    }
 
     void splitChild(node* parent, node* leftNode){
         node* rightNode = new node(degree);
@@ -99,6 +98,7 @@ class bTree{
         // add the middle keys to the parent
     }
 
+// search and split child function and that's it
 };
 
 int main() {

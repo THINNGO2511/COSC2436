@@ -60,7 +60,8 @@ class BTree
 {
 	BTreeNode *root; // Pointer to root node
 	int t; // Minimum degree
-public:
+	
+	public:
 	// Constructor (Initializes tree as empty)
 	BTree(int _t)
 	{ root = NULL; t = _t; }
@@ -265,7 +266,7 @@ void BTreeNode::splitChild(int i, BTreeNode *y)
 // Driver program to test above functions
 int main()
 {
-    ifstream input("input1.txt");
+    ifstream input("input2.txt");
     ifstream command("command2.txt");
     ofstream output("output1.txt");
 
@@ -292,13 +293,13 @@ int main()
         levelVect.push_back(analyze_level(level));
     }
 
-    // cout<<analyze_command(cmd)<<endl;
+	degree = analyze_command(cmd);
 
     // for(int i=0; i< levelVect.size(); i++){
     //     cout<<levelVect[i]<<endl;
     // }
 
-	BTree t(3); // A B-Tree with minimum degree 3
+	BTree t(degree); // A B-Tree with minimum degree 3
 
     while(input>>n){
         // numVect.push_back(n);

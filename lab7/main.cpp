@@ -3,6 +3,7 @@
 #include <queue>
 #include <algorithm>
 #include "ArgumentManager.h"
+using namespace std;
 
 
 bool BFS(int **graph, int start, int end, int n)
