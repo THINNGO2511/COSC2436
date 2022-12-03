@@ -87,7 +87,6 @@ int main(int argc, char *argv[]) {
         num.push_back(stof(finalList[i][1]));
     }
 
-    
     priority_queue<pair<float, string > >p1;
     queue<string> q;
 
